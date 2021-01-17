@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block stylesheet %}
-        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">        
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
     {% endblock stylesheet %}
     <title>{% block title %}{% endblock title %}</title>
 </head>
@@ -21,10 +22,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item active dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                             Dropdown
@@ -36,14 +34,10 @@
                             <a class="dropdown-item" href="#">Something else here</a>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                <ul class="navbar-nav navbar-right">
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger" role="button">Logout</a>
+                </ul>
             </div>
         </nav>
     {% endblock navbar %}
