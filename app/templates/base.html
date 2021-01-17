@@ -41,6 +41,10 @@
             </div>
         </nav>
     {% endblock navbar %}
+    <div class="container">
+        {% block content %}
+        {% endblock content %}
+    </div>
     {% block script %}
         <script src="{{ url_for('static', filename='js/jquery-3.4.1.slim.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
