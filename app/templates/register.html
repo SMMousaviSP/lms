@@ -15,11 +15,35 @@
 {% block content %}
     <form method="POST" action="{{ url_for('register') }}" class="form-signin">
         <h1>LMS</h1>
-        <h2 class="h3 mb-3 font-weight-normal">Please enter your information to register</h2>
-        <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" name="Username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="Password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <h2 class="h3 mb-3 font-weight-normal">Registration Form</h2>
+        <div class="form-group">
+            <input type="text" name="Username" class="form-control" placeholder="Username" required autofocus>
+        </div>
+        <div class="form-group">
+            <input type="password" name="Password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input type="text" name="FirstName" class="form-control" placeholder="First Name">
+        </div>
+        <div class="form-group">
+            <input type="text" name="LastName" class="form-control" placeholder="Last Name">
+        </div>
+        <div class="form-group">
+            <input type="number" name="PhoneNumber" class="form-control" placeholder="Phone Number">
+        </div>
+        <div class="form-group">
+            <input type="email" name="Email" class="form-control" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <input type="text" name="Faculty" class="form-control" placeholder="Faculty">
+        </div>
+        <div class="form-group">
+            <input type="text" name="Institution" class="form-control" placeholder="Institution">
+        </div>
+        <div class="form-group">
+            <textarea name="Address" class="form-control" rows="2" placeholder="Address"></textarea>
+        </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        <a href="{{ url_for('login') }}" class="btn btn-lg btn-success btn-block" role="button">Login</a>
     </form>
 {% endblock content %}
