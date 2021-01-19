@@ -76,3 +76,27 @@ def create_user(
     cur.close()
     conn.close()
     return (True, f"User with username: {Username} created successfully")
+
+
+def check_login(Username, Password):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT ID, Username, Password, FirstName, LastName,
+        is_student, is_teacher, is_manager, is_admin
+        FROM Users WHERE
+        Username = '{Username}'
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, e, None)
+    raw_user = cur.fetchone()
+    cur.close()
+    conn.close()
+    if raw_user:
+        if check_password_hash(raw_user.pop('Password'), Password):
+            return (True, "Correct username and password", raw_user)
+    return (False, "Wrong username or password", raw_user)

@@ -9,7 +9,7 @@
 {% endblock stylesheet %}
 
 {% block content %}
-    <form class="form-signin">
+    <form method="POST" action="{{ url_for('login') }}" class="form-signin">
         <h1>LMS</h1>
         <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
         <div class="form-group">

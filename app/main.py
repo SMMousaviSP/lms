@@ -1,25 +1,67 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 from . import model
 
 
 app = Flask(__name__)
-# Secret key should be changed in the development
-app.config["SECRET_KEY"] = "gPo4xFh0KnZsUbf2cOXAC9RxdBA2VSEI"
+app.config['SECRET_KEY'] = 'Wfd8do6H7d74vdesbuRLlMFiAeXeJ7r'
+# Flask login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+login_manager.login_message_category = "danger"
+
+
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+    def __repr__(self):
+        return f"<{self.id}>"
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
 
 
 @app.route("/")
+@login_required
 def index():
     return render_template("base.html")
 
 
-@app.route("/login/")
+@app.route("/login/", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        flash(f"You are currently logged in", "primary")
+        return redirect(url_for("index"))
+    if request.method == 'POST':
+        Username = request.form.get('Username', '')
+        Password = request.form.get('Password', '')
+        success, message, raw_user = model.check_login(Username, Password)
+        if success:
+            login_user(User(raw_user['ID']))
+            return redirect('/')
+        else:
+            flash(message, 'warning')
+            return redirect(url_for('login'))
     return render_template("login.html")
 
 
 @app.route("/logout/")
+@login_required
 def logout():
-    pass
+    logout_user()
+    flash("You have logged out successfully", "success")
+    return redirect(url_for('login'))
 
 
 @app.route("/register/", methods=["GET", "POST"])
@@ -51,5 +93,5 @@ def register():
                 "success",
             )
             return redirect(url_for("login"))
-        flash(message, 'warning')
+        flash(message, "warning")
     return render_template("register.html")
