@@ -18,6 +18,7 @@
         <div class="form-group">
             <input type="password" name="Password" class="form-control" placeholder="Password" required>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
+        <a href="{{ url_for('register') }}" class="btn btn-lg btn-primary btn-block" role="button">Register</a>
     </form>
 {% endblock content %}
