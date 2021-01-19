@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+{% endblock stylesheet %}
+
+{% block title %}
+    LMS - Home
+{% endblock title %}
+
+{% block content %}
+    This is index.html
+{% endblock content %}

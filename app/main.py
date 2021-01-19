@@ -35,7 +35,7 @@ def load_user(userid):
 @app.route("/")
 @login_required
 def index():
-    return render_template("base.html")
+    return render_template("index.html")
 
 
 @app.route("/login/", methods=["GET", "POST"])
