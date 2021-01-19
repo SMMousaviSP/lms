@@ -8,6 +8,10 @@
     <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
 {% endblock stylesheet %}
 
+{% block title %}
+    LMS - Login
+{% endblock title %}
+
 {% block content %}
     <form method="POST" action="{{ url_for('login') }}" class="form-signin">
         <h1>LMS</h1>
