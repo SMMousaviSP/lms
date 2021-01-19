@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for, session
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -11,7 +11,7 @@ from . import model
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'Wfd8do6H7d74vdesbuRLlMFiAeXeJ7r'
+app.config["SECRET_KEY"] = "Wfd8do6H7d74vdesbuRLlMFiAeXeJ7r"
 # Flask login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -43,16 +43,17 @@ def login():
     if current_user.is_authenticated:
         flash(f"You are currently logged in", "primary")
         return redirect(url_for("index"))
-    if request.method == 'POST':
-        Username = request.form.get('Username', '')
-        Password = request.form.get('Password', '')
+    if request.method == "POST":
+        Username = request.form.get("Username", "")
+        Password = request.form.get("Password", "")
         success, message, raw_user = model.check_login(Username, Password)
         if success:
-            login_user(User(raw_user['ID']))
-            return redirect('/')
+            login_user(User(raw_user["ID"]))
+            session['User'] = raw_user
+            return redirect("/")
         else:
-            flash(message, 'warning')
-            return redirect(url_for('login'))
+            flash(message, "warning")
+            return redirect(url_for("login"))
     return render_template("login.html")
 
 
@@ -61,7 +62,7 @@ def login():
 def logout():
     logout_user()
     flash("You have logged out successfully", "success")
-    return redirect(url_for('login'))
+    return redirect(url_for("login"))
 
 
 @app.route("/register/", methods=["GET", "POST"])
@@ -95,3 +96,8 @@ def register():
             return redirect(url_for("login"))
         flash(message, "warning")
     return render_template("register.html")
+
+@app.route('/profile/')
+@login_required
+def profile():
+    pass
