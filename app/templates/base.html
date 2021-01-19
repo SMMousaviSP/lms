@@ -1,3 +1,4 @@
+{% from 'macro.html' import flash %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,6 +43,17 @@
         </nav>
     {% endblock navbar %}
     <div class="container">
+        <div class="flash">
+            {% block flash %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {{ flash(message, category) }}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            {% endblock flash %}
+        </div>
         {% block content %}
         {% endblock content %}
     </div>
