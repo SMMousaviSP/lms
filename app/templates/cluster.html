@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% from 'macro.html' import page_header, table %}
+
+{% block title %}
+    LMS - Clusters
+{% endblock title %}
+
+{% block content %}
+    {{ page_header("Cluster List") }}
+    <form method="POST" action="{{ url_for('cluster_list') }}" class="mb-4">
+        <div class="row">
+            <div class="col-9">
+                <input name="Name" type="text" class="form-control" placeholder="Cluster Name">
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-success btn-block">Create New Cluster</button>
+            </div>
+        </div>
+    </form>
+    {{ table(li=cluster_list, button=false) }}
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+{% endblock script %}

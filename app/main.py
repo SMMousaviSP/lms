@@ -49,7 +49,7 @@ def login():
         success, message, raw_user = model.check_login(Username, Password)
         if success:
             login_user(User(raw_user["ID"]))
-            session['User'] = raw_user
+            session["User"] = raw_user
             return redirect("/")
         else:
             flash(message, "warning")
@@ -98,17 +98,17 @@ def register():
     return render_template("register.html")
 
 
-@app.route('/users/')
+@app.route("/users/")
 @login_required
 def user_list():
     success, message, user_list = model.get_user_list()
     if not success:
-        flash(message, 'warning')
-        return redirect(url_for('index'))
+        flash(message, "warning")
+        return redirect(url_for("index"))
     return render_template("user_list.html", user_list=user_list)
 
 
-@app.route('/profile/<int:ID>/', methods=['GET', 'POST'])
+@app.route("/profile/<int:ID>/", methods=["GET", "POST"])
 @login_required
 def profile(ID):
     if request.method == "POST":
@@ -140,6 +140,26 @@ def profile(ID):
         flash(message, "warning")
     success, message, raw_user = model.get_user_profile(ID)
     if not success:
-        flash("No such user exists, or you don't have access to it's profile.", "warning")
-        return redirect(url_for('index'))
-    return render_template('profile.html', user=raw_user)
+        flash(
+            "No such user exists, or you don't have access to it's profile.", "warning"
+        )
+        return redirect(url_for("index"))
+    return render_template("profile.html", user=raw_user)
+
+
+@app.route("/clusters/", methods=["GET", "POST"])
+@login_required
+def cluster_list():
+    if request.method == "POST":
+        Name = request.form.get("Name", "DEFAULT")
+        success, message = model.create_cluster(Name)
+        if success:
+            flash(message, "success")
+            return redirect(url_for("cluster_list"))
+        flash(message, "warning")
+        return redirect(url_for("cluster_list"))
+    success, message, cluster_list = model.get_cluster_list()
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for('cluster_list'))
+    return render_template("cluster.html", cluster_list=cluster_list)

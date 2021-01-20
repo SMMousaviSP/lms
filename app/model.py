@@ -72,7 +72,7 @@ def create_user(
     except Error as e:
         cur.close()
         conn.close()
-        return (False, e)
+        return (False, str(e))
     cur.close()
     conn.close()
     return (True, f"User with username: {Username} created successfully")
@@ -92,7 +92,7 @@ def check_login(Username, Password):
     except Error as e:
         cur.close()
         conn.close()
-        return (False, e, None)
+        return (False, str(e), None)
     raw_user = cur.fetchone()
     cur.close()
     conn.close()
@@ -115,7 +115,7 @@ def get_user_list():
     except Error as e:
         cur.close()
         conn.close()
-        return (False, e, None)
+        return (False, str(e), None)
     user_list = cur.fetchall()
     cur.close()
     conn.close()
@@ -135,7 +135,7 @@ def get_user_profile(ID):
     except Error as e:
         cur.close()
         conn.close()
-        return (False, e, None)
+        return (False, str(e), None)
     raw_user = cur.fetchone()
     cur.close()
     conn.close()
@@ -176,5 +176,52 @@ def edit_user_profile(
     except Error as e:
         cur.close()
         conn.close()
-        return (False, e)
+        return (False, str(e))
+    cur.close()
+    conn.close()
     return (True, "User profile updated successfully.")
+
+
+def create_cluster(Name):
+    """
+    CREATE TABLE Clusters (
+        ID INT NOT NULL AUTO_INCREMENT,
+        Name VARCHAR(64) NOT NULL UNIQUE,
+        PRIMARY KEY (ID)
+    );
+    """
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        INSERT INTO Clusters (Name)
+        VALUES ('{Name}')
+    """
+    try:
+        cur.execute(sql_str)
+        conn.commit()
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e))
+    cur.close()
+    conn.close()
+    return (True, "Cluster created successfully.")
+
+
+def get_cluster_list():
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = """
+        SELECT Name, ID
+        FROM Clusters
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    cluster_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "Clusters retrieved from db, successfully.", cluster_list)
