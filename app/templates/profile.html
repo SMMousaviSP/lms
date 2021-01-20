@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% from 'macro.html' import input, page_header %}
+{% from 'macro.html' import input, page_header, input_select, table %}
 
 {% block title %}
     LMS - {{ user['Username'] }} Profile
@@ -19,4 +19,27 @@
         {{ input(name="Address", label="Address", value=user["Address"]) }}
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    {{ page_header("Add as Student to Course") }}
+    <form method="POST" action="{{ url_for('participate', StudentID=user["ID"]) }}" class="mb-4">
+        <div class="row">
+            <div class="col-9">
+                {{ input_select(name="CourseID", li=course_list, value="ID", value_name="Name", label="Course", required=true, default_value_name="Select Course", have_label=false) }}
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </div>
+    </form>
+    {% if student_course_list %}
+        {{ table(li=student_course_list, button=false) }}
+    {% endif %}
 {% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+{% endblock script %}

@@ -48,14 +48,44 @@
     </table>
 {% endmacro %}
 
-{% macro input(name, label, placeholder="", required=false, type="text", value="") %}
+{% macro input(name, label, have_label=true, placeholder="", required=false, type="text", value="") %}
     {% set unique_id = "id" + range(0, 1000000) | random | string %}
-    <div class="form-group">
-        <label for="{{ unique_id }}">{{label}}</label>
+    {% if have_label %}        
+        <div class="form-group">
+            <label for="{{ unique_id }}">{{label}}</label>
+            {% if required %}
+                <input name="{{ name }}" type="{{ type }}" class="form-control" id="{{ unique_id }}" placeholder="{{placeholder}}" value="{{ value }}" required>
+            {% else %}
+                <input name="{{ name }}" type="{{ type }}" class="form-control" id="{{ unique_id }}" placeholder="{{placeholder}}" value="{{ value }}">
+            {% endif %}
+        </div>
+    {% else %}
         {% if required %}
-            <input name="{{ name }}" type="{{ type }}" class="form-control" id="{{ unique_id }}" placeholder="{{placeholder}}" value="{{ value }}" required>
+            <input name="{{ name }}" type="{{ type }}" class="form-control" placeholder="{{placeholder}}" value="{{ value }}" required>
         {% else %}
-            <input name="{{ name }}" type="{{ type }}" class="form-control" id="{{ unique_id }}" placeholder="{{placeholder}}" value="{{ value }}">
+            <input name="{{ name }}" type="{{ type }}" class="form-control" placeholder="{{placeholder}}" value="{{ value }}">
         {% endif %}
-    </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro input_select(name, li, value, value_name, label, have_label=true, required=false, default_value_name="") %}
+    {% set unique_id = "id" + range(0, 1000000) | random | string %}
+    {% if have_label %}
+        <div class="form-group">
+            <label for="{{ unique_id }}">{{ label }}</label>
+            <select name="{{ name }}" id="{{ unique_id }}" class="form-control" {% if required %}required{% endif %}>
+                <option value="" disabled selected>{{ default_value_name }}</option>
+                {% for dict in li %}
+                    <option value="{{ dict[value] }}">{{ dict[value_name] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% else %}
+        <select name="{{ name }}" class="form-control" {% if required %}required{% endif %}>
+            <option value="" disabled selected>{{ default_value_name }}</option>
+            {% for dict in li %}
+                <option value="{{ dict[value] }}">{{ dict[value_name] }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
 {% endmacro %}

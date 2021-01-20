@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% from 'macro.html' import page_header, table, input, input_select %}
+
+{% block title %}
+    LMS - Courses
+{% endblock title %}
+
+{% block content %}
+    {{ page_header("Course List") }}
+    <form method="POST" action="{{ url_for('course_list') }}" class="mb-4">
+        <div class="row">
+            <div class="col-3">
+                <input name="Name" type="text" class="form-control" placeholder="Course Name">
+            </div>
+            <div class="col-3">
+                {{ input_select(name="TeacherID", li=user_list, value="ID", value_name="Username", label="Teacher", required=true, default_value_name="Select Teacher", have_label=false) }}
+            </div>
+            <div class="col-3">
+                {{ input_select(name="ClusterID", li=cluster_list, value="ID", value_name="Name", label="Cluster", required=true, default_value_name="Select Cluster", have_label=false) }}
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-success btn-block">Create New Course</button>
+            </div>
+        </div>
+    </form>
+    {{ table(li=course_list, button=false) }}
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+{% endblock script %}

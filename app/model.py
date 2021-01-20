@@ -225,3 +225,110 @@ def get_cluster_list():
     cur.close()
     conn.close()
     return (True, "Clusters retrieved from db, successfully.", cluster_list)
+
+
+def create_course(Name, TeacherID, ClusterID):
+    """
+    CREATE TABLE Courses (
+        ID INT NOT NULL AUTO_INCREMENT,
+        Name VARCHAR(64) NOT NULL,
+        ClusterID INT NOT NULL,
+        TeacherID INT NOT NULL,
+        PRIMARY KEY (ID),
+        FOREIGN KEY (ClusterID) REFERENCES Clusters(ID)
+        ON DELETE RESTRICT,
+        FOREIGN KEY (TeacherID) REFERENCES Users(ID)
+        ON DELETE RESTRICT
+    );
+    """
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        INSERT INTO Courses
+        (Name, ClusterID, TeacherID)
+        VALUES
+        ('{Name}', {ClusterID}, {TeacherID})
+    """
+    print(sql_str)
+    try:
+        cur.execute(sql_str)
+        conn.commit()
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e))
+    cur.close()
+    conn.close()
+    return (True, "Course created successfully.")
+
+
+def get_all_course_list():
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = """
+        SELECT Name, ClusterID, TeacherID, ID
+        FROM Courses
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e))
+    course_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "Course list retrieved from db, successfully", course_list)
+
+
+def create_student_course(StudentID, CourseID):
+    """
+    CREATE TABLE StudentCourse (
+        StudentID INT NOT NULL,
+        CourseID INT NOT NULL,
+        PRIMARY KEY (StudentID, CourseID),
+        FOREIGN KEY (StudentID) REFERENCES Users(ID)
+        ON DELETE RESTRICT,
+        FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+        ON DELETE RESTRICT
+    );
+    """
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        INSERT INTO StudentCourse
+        (StudentID, CourseID)
+        VALUES
+        ({StudentID}, {CourseID})
+    """
+    try:
+        cur.execute(sql_str)
+        conn.commit()
+    except Error as e:
+        cur.close()
+        conn.close()
+        return(False, str(e))
+    cur.close()
+    conn.close()
+    return (True, "Student participated in the course successfully.")
+
+
+def get_student_course(StudentID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT c.Name AS 'Course Name'
+        FROM StudentCourse AS sc
+            INNER JOIN Courses AS c ON sc.CourseID = c.ID
+        WHERE sc.StudentID = {StudentID}
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    student_course_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "Courses retrieved from db, successfully.", student_course_list)
