@@ -100,3 +100,23 @@ def check_login(Username, Password):
         if check_password_hash(raw_user.pop('Password'), Password):
             return (True, "Correct username and password", raw_user)
     return (False, "Wrong username or password", raw_user)
+
+
+def get_user_list():
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = """
+        SELECT Username, FirstName AS 'First Name', LastName AS 'Last Name',
+        PhoneNumber AS 'Phone Number', Email, Faculty, ID
+        FROM Users
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, e, None)
+    user_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "User list retrieved from db, successfully", user_list)

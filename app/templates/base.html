@@ -7,6 +7,7 @@
     {% block stylesheet %}
         <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/jquery.dataTables.css') }}" rel="stylesheet">
     {% endblock stylesheet %}
     <title>{% block title %}{% endblock title %}</title>
 </head>
@@ -29,7 +30,7 @@
                             {{ session.User.Username }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a>
+                            <a class="dropdown-item" href="{{ url_for('profile', ID=session.User.ID) }}">Profile</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
                         </div>
@@ -59,7 +60,8 @@
     {% block script %}
         <script src="{{ url_for('static', filename='js/jquery-3.4.1.slim.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>        
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.dataTables.js') }}" type="text/javascript" charset="utf8"></script>
     {% endblock script %}
 </body>
 </html>

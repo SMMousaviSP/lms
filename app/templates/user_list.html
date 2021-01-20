@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% from 'macro.html' import table %}
+
+{% block title %}
+    LMS - Users
+{% endblock title %}
+
+{% block content %}
+    {{ table(li=user_list, button_url="profile", button_text="Edit", button_color="primary") }}
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+{% endblock script %}

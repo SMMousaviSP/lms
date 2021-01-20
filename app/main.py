@@ -97,7 +97,18 @@ def register():
         flash(message, "warning")
     return render_template("register.html")
 
-@app.route('/profile/')
+
+@app.route('/users/')
 @login_required
-def profile():
+def user_list():
+    success, message, user_list = model.get_user_list()
+    if not success:
+        flash(message, 'warning')
+        return redirect(url_for('index'))
+    return render_template("user_list.html", user_list=user_list)
+
+
+@app.route('/profile/<int:ID>/')
+@login_required
+def profile(ID):
     pass

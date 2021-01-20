@@ -10,5 +10,20 @@
 {% endblock title %}
 
 {% block content %}
-    This is index.html
+    <div>
+        {{ session }}
+    </div>
+    {% if session.User.is_admin %}
+        <div class="row">
+            <div class="col">
+                <a href="{{ url_for('user_list') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Users</a>
+            </div>
+            <div class="col">
+                <a href="{{ url_for('index') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Clusters</a>
+            </div>
+            <div class="col">
+                <a href="{{ url_for('index') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Courses</a>
+            </div>
+        </div>
+    {% endif %}
 {% endblock content %}
