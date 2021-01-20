@@ -8,6 +8,13 @@
 {%- endmacro %}
 
 
+{% macro page_header(text) %}
+    <h2 class="pb-2 mt-4 mb-4 border-bottom">
+        {{ text }}
+    </h2>
+{% endmacro %}
+
+
 {% macro table(li, button=true, button_text='Edit', button_url="", button_color='primary', button_head='Action') %}
     <table id="table_id" class="display">
         <thead>

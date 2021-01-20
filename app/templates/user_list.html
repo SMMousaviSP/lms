@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
-{% from 'macro.html' import table %}
+{% from 'macro.html' import table, page_header %}
 
 {% block title %}
     LMS - Users
 {% endblock title %}
 
 {% block content %}
+    {{ page_header("User List") }}
     {{ table(li=user_list, button_url="profile", button_text="Edit", button_color="primary") }}
 {% endblock content %}
 
