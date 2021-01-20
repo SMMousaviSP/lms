@@ -108,7 +108,38 @@ def user_list():
     return render_template("user_list.html", user_list=user_list)
 
 
-@app.route('/profile/<int:ID>/')
+@app.route('/profile/<int:ID>/', methods=['GET', 'POST'])
 @login_required
 def profile(ID):
-    pass
+    if request.method == "POST":
+        Username = request.form.get("Username", "")
+        LastName = request.form.get("LastName", "")
+        FirstName = request.form.get("FirstName", "")
+        PhoneNumber = request.form.get("PhoneNumber", "")
+        Email = request.form.get("Email", "")
+        Faculty = request.form.get("Faculty", "")
+        Institution = request.form.get("Institution", "")
+        Address = request.form.get("Address", "")
+        success, message = model.edit_user_profile(
+            ID=ID,
+            Username=Username,
+            LastName=LastName,
+            FirstName=FirstName,
+            PhoneNumber=PhoneNumber,
+            Email=Email,
+            Faculty=Faculty,
+            Institution=Institution,
+            Address=Address,
+        )
+        if success:
+            flash(
+                "Profile updated successfully.",
+                "success",
+            )
+            return redirect(url_for("profile", ID=ID))
+        flash(message, "warning")
+    success, message, raw_user = model.get_user_profile(ID)
+    if not success:
+        flash("No such user exists, or you don't have access to it's profile.", "warning")
+        return redirect(url_for('index'))
+    return render_template('profile.html', user=raw_user)

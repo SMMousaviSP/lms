@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% from 'macro.html' import input %}
+
+{% block title %}
+    LMS - {{ user['Username'] }} Profile
+{% endblock title %}
+
+{% block content %}
+    <h2 class="pb-2 mt-4 mb-4 border-bottom">
+        Edit Profile
+    </h2>
+    <form method="POST" action="{{ url_for('profile', ID=user["ID"]) }}">
+        {{ input(name="Username", label="Username", value=user["Username"], required=true) }}
+        {{ input(name="FirstName", label="First Name", value=user["FirstName"]) }}
+        {{ input(name="LastName", label="Last Name", value=user["LastName"]) }}
+        {{ input(name="PhoneNumber", label="Phone Number", value=user["PhoneNumber"]) }}
+        {{ input(name="Email", label="Email", value=user["Email"]) }}
+        {{ input(name="Faculty", label="Faculty", value=user["Faculty"]) }}
+        {{ input(name="Institution", label="Institution", value=user["Institution"]) }}
+        {{ input(name="Address", label="Address", value=user["Address"]) }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock content %}

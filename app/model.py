@@ -120,3 +120,61 @@ def get_user_list():
     cur.close()
     conn.close()
     return (True, "User list retrieved from db, successfully", user_list)
+
+
+def get_user_profile(ID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT *
+        FROM Users
+        WHERE ID={ID}
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, e, None)
+    raw_user = cur.fetchone()
+    cur.close()
+    conn.close()
+    if raw_user:
+        raw_user.pop('Password')
+        return (True, "User profile retrieved from db, successfully", raw_user)
+    return (False, "No such user exists", None)
+
+
+def edit_user_profile(
+    ID,
+    Username,
+    LastName="DEFAULT",
+    FirstName="DEFAULT",
+    PhoneNumber="DEFAULT",
+    Email="DEFAULT",
+    Faculty="DEFAULT",
+    Institution="DEFAULT",
+    Address="DEFAULT"
+):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        UPDATE Users
+        SET LastName = '{LastName}', FirstName = '{FirstName}',
+        PhoneNumber = '{PhoneNumber}', Email = '{Email}',
+        Faculty = '{Faculty}', Institution = '{Institution}',
+        Address = '{Address}', Username = '{Username}'
+        WHERE ID = {ID};
+    """
+    print("----------------------------------------")
+    print(sql_str)
+    print("----------------------------------------")
+
+    try:
+        cur.execute(sql_str)
+        conn.commit()
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, e)
+    return (True, "User profile updated successfully.")

@@ -40,3 +40,15 @@
         </tbody>
     </table>
 {% endmacro %}
+
+{% macro input(name, label, placeholder="", required=false, type="text", value="") %}
+    {% set unique_id = "id" + range(0, 1000000) | random | string %}
+    <div class="form-group">
+        <label for="{{ unique_id }}">{{label}}</label>
+        {% if required %}
+            <input name="{{ name }}" type="{{ type }}" class="form-control" id="{{ unique_id }}" placeholder="{{placeholder}}" value="{{ value }}" required>
+        {% else %}
+            <input name="{{ name }}" type="{{ type }}" class="form-control" id="{{ unique_id }}" placeholder="{{placeholder}}" value="{{ value }}">
+        {% endif %}
+    </div>
+{% endmacro %}
