@@ -272,7 +272,7 @@ def get_all_cluster_list():
     conn = get_conn()
     cur = conn.cursor(dictionary=True)
     sql_str = """
-        SELECT Name, ID
+        SELECT Name AS 'Cluster Name', ID AS 'Cluster ID'
         FROM Clusters
     """
     try:

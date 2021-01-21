@@ -155,11 +155,18 @@ def profile(ID):
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
+    success, message, cluster_list = model.get_cluster_list(
+        current_user.id, current_user.is_admin()
+    )
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
     return render_template(
         "profile.html",
         user=raw_user,
         course_list=course_list,
         student_course_list=student_course_list,
+        cluster_list=cluster_list
     )
 
 
@@ -181,6 +188,18 @@ def cluster_list():
         flash(message, "warning")
         return redirect(url_for("cluster_list"))
     return render_template("cluster.html", cluster_list=cluster_list)
+
+
+@app.route("/make_manager/<int:ManagerID>/", methods=["POST"])
+@login_required
+def make_manager(ManagerID):
+    ClusterID = request.form.get("ClusterID", "")
+    success, message = model.create_manager_cluster(ManagerID, ClusterID)
+    if success:
+        flash(message, "success")
+    else:
+        flash(message, "warning")
+    return redirect(url_for("profile", ID=ManagerID))
 
 
 @app.route("/courses/", methods=["GET", "POST"])

@@ -17,7 +17,7 @@
 
 {% macro table(li, button=true, button_text='Edit', button_url="", button_color='primary', button_head='Action') %}
     {% if li %}    
-        <table id="table_id" class="display">
+        <table id="table_id" class="display table_id">
             <thead>
                 <tr>
                     {% for key, value in li[0].items() %}
