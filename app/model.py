@@ -166,10 +166,6 @@ def edit_user_profile(
         Address = '{Address}', Username = '{Username}'
         WHERE ID = {ID};
     """
-    print("----------------------------------------")
-    print(sql_str)
-    print("----------------------------------------")
-
     try:
         cur.execute(sql_str)
         conn.commit()
