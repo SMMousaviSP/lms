@@ -284,7 +284,7 @@ def is_manager(UserID):
     return (
         True,
         "User checked for manager successfully",
-        bool(int(manager['is_manager']))
+        bool(int(manager["is_manager"])),
     )
 
 
@@ -403,7 +403,8 @@ def get_student_course_list(StudentID):
     conn = get_conn()
     cur = conn.cursor(dictionary=True)
     sql_str = f"""
-        SELECT c.Name AS 'Course Name', u.FirstName AS 'Teacher First Name', u.LastName AS 'Teacher Last Name', c.ID AS 'Course ID'
+        SELECT c.Name AS 'Course Name', u.FirstName AS 'Teacher First Name',
+        u.LastName AS 'Teacher Last Name', c.ID AS 'Course ID'
         FROM ((StudentCourse AS sc
             INNER JOIN Courses AS c ON sc.CourseID = c.ID)
             INNER JOIN Users AS u ON c.TeacherID = u.ID)
@@ -419,3 +420,25 @@ def get_student_course_list(StudentID):
     cur.close()
     conn.close()
     return (True, "Courses retrieved from db, successfully.", student_course_list)
+
+
+def get_teacher_course_list(TeacherID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT c.Name AS 'Course Name', u.FirstName AS 'Teacher First Name',
+        u.LastName AS 'Teacher Last Name', c.ID AS 'Course ID'
+        FROM Courses AS c
+            INNER JOIN Users AS u ON c.TeacherID = u.ID
+        WHERE c.TeacherID = {TeacherID}
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    teacher_course_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "Courses retrieved from db, successfully.", teacher_course_list)

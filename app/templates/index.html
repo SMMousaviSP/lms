@@ -42,4 +42,20 @@
         </div>
     {% endfor %}
 
+    {% for course in teacher_course_list %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <a href="{{ url_for('course', CourseID=course["Course ID"]) }}" class="course-link">
+                    <h5 class="card-title">
+                        {{ course["Course Name"] }}
+                        <span class="badge badge-danger">
+                            Teacher
+                        </span>
+                    </h5>
+                </a>
+            <h6 class="card-subtitle mb-2 text-muted">Teacher: {{ course["Teacher First Name"] }} {{ course["Teacher Last Name"] }}</h6>
+            </div>
+        </div>
+    {% endfor %}
+
 {% endblock content %}

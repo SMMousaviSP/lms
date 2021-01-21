@@ -44,7 +44,17 @@ def index():
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
-    return render_template("index.html", student_course_list=student_course_list)
+    success, message, teacher_course_list = model.get_teacher_course_list(
+        current_user.id
+    )
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
+    return render_template(
+        "index.html",
+        teacher_course_list=teacher_course_list,
+        student_course_list=student_course_list,
+    )
 
 
 @app.route("/course/<int:CourseID>")
@@ -254,7 +264,7 @@ def course_list():
         flash(message, "warning")
         return redirect(url_for("index"))
     return render_template(
-        "course.html",
+        "course_list.html",
         course_list=course_list,
         cluster_list=cluster_list,
         user_list=user_list,
