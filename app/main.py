@@ -23,6 +23,9 @@ class User(UserMixin):
     def __init__(self, id):
         self.id = id
 
+    def is_admin(self):
+        return bool(session["User"]["is_admin"])
+
     def __repr__(self):
         return f"<{self.id}>"
 
@@ -152,7 +155,12 @@ def profile(ID):
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
-    return render_template("profile.html", user=raw_user, course_list=course_list, student_course_list=student_course_list)
+    return render_template(
+        "profile.html",
+        user=raw_user,
+        course_list=course_list,
+        student_course_list=student_course_list,
+    )
 
 
 @app.route("/clusters/", methods=["GET", "POST"])
@@ -166,10 +174,12 @@ def cluster_list():
             return redirect(url_for("cluster_list"))
         flash(message, "warning")
         return redirect(url_for("cluster_list"))
-    success, message, cluster_list = model.get_cluster_list()
+    success, message, cluster_list = model.get_cluster_list(
+        current_user.id, current_user.is_admin()
+    )
     if not success:
         flash(message, "warning")
-        return redirect(url_for('cluster_list'))
+        return redirect(url_for("cluster_list"))
     return render_template("cluster.html", cluster_list=cluster_list)
 
 
@@ -190,15 +200,20 @@ def course_list():
     if not success:
         flash(message, "warning")
         return redirect(url_for("course_list"))
-    success, message, cluster_list = model.get_cluster_list()
+    success, message, cluster_list = model.get_cluster_list(current_user.id, current_user.is_admin())
     if not success:
         flash(message, "warning")
-        return redirect(url_for('index'))
+        return redirect(url_for("index"))
     success, message, user_list = model.get_user_list()
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
-    return render_template("course.html", course_list=course_list, cluster_list=cluster_list, user_list=user_list)
+    return render_template(
+        "course.html",
+        course_list=course_list,
+        cluster_list=cluster_list,
+        user_list=user_list,
+    )
 
 
 @app.route("/participate/<int:StudentID>", methods=["POST"])

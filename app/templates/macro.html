@@ -16,36 +16,38 @@
 
 
 {% macro table(li, button=true, button_text='Edit', button_url="", button_color='primary', button_head='Action') %}
-    <table id="table_id" class="display">
-        <thead>
-            <tr>
-                {% for key, value in li[0].items() %}
-                    {% if button and (key == 'ID' or key == 'Id' or key == 'id') %}
-                        <th style="text-align: center;">
-                            {{ button_head }}
-                        </th>
-                    {% else %}
-                        <th>{{ key }}</th>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for dict in li %}
+    {% if li %}    
+        <table id="table_id" class="display">
+            <thead>
                 <tr>
-                {% for key, value in dict.items() %}
-                    {% if button and (key == 'ID' or key == 'Id' or key == 'id') %}
-                        <td style="text-align: center;">
-                            <a href="{{ url_for(button_url, ID=value) }}" class="btn btn-{{ button_color }}" role="button">{{ button_text }}</a>
-                        </td>
-                    {% else %}
-                        <td>{{ value }}</td>
-                    {% endif %}
-                {% endfor %}
+                    {% for key, value in li[0].items() %}
+                        {% if button and (key == 'ID' or key == 'Id' or key == 'id') %}
+                            <th style="text-align: center;">
+                                {{ button_head }}
+                            </th>
+                        {% else %}
+                            <th>{{ key }}</th>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for dict in li %}
+                    <tr>
+                    {% for key, value in dict.items() %}
+                        {% if button and (key == 'ID' or key == 'Id' or key == 'id') %}
+                            <td style="text-align: center;">
+                                <a href="{{ url_for(button_url, ID=value) }}" class="btn btn-{{ button_color }}" role="button">{{ button_text }}</a>
+                            </td>
+                        {% else %}
+                            <td>{{ value }}</td>
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endmacro %}
 
 {% macro input(name, label, have_label=true, placeholder="", required=false, type="text", value="") %}

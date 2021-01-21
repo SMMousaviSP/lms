@@ -26,7 +26,7 @@ def create_user(
     Email="DEFAULT",
     Faculty="DEFAULT",
     Institution="DEFAULT",
-    Address="DEFAULT"
+    Address="DEFAULT",
 ):
     """
     CREATE TABLE Users (
@@ -97,7 +97,7 @@ def check_login(Username, Password):
     cur.close()
     conn.close()
     if raw_user:
-        if check_password_hash(raw_user.pop('Password'), Password):
+        if check_password_hash(raw_user.pop("Password"), Password):
             return (True, "Correct username and password", raw_user)
     return (False, "Wrong username or password", raw_user)
 
@@ -140,7 +140,7 @@ def get_user_profile(ID):
     cur.close()
     conn.close()
     if raw_user:
-        raw_user.pop('Password')
+        raw_user.pop("Password")
         return (True, "User profile retrieved from db, successfully", raw_user)
     return (False, "No such user exists", None)
 
@@ -154,7 +154,7 @@ def edit_user_profile(
     Email="DEFAULT",
     Faculty="DEFAULT",
     Institution="DEFAULT",
-    Address="DEFAULT"
+    Address="DEFAULT",
 ):
     conn = get_conn()
     cur = conn.cursor(dictionary=True)
@@ -204,7 +204,71 @@ def create_cluster(Name):
     return (True, "Cluster created successfully.")
 
 
-def get_cluster_list():
+def create_manager_cluster(ManagerID, ClusterID):
+    """
+    CREATE TABLE ManagerCluster (
+        ManagerID INT NOT NULL,
+        ClusterID INT NOT NULL,
+        PRIMARY KEY (ManagerID, ClusterID),
+        FOREIGN KEY (ManagerID) REFERENCES Users(ID)
+        ON DELETE RESTRICT,
+        FOREIGN KEY (ClusterID) REFERENCES Clusters(ID)
+        ON DELETE RESTRICT
+    )
+    """
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        INSERT INTO ManagerCluster
+        (ManagerID, ClusterID)
+        VALUES
+        ({ManagerID}, {ClusterID})
+    """
+    try:
+        cur.execute(sql_str)
+        conn.commit()
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e))
+    cur.close()
+    conn.close()
+    return (True, "Cluster manager created successfully.")
+
+
+def get_cluster_manager_list(ManagerID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT Name AS 'Cluster Name', ID AS 'Cluster ID'
+        FROM Clusters WHERE 'Cluster ID' IN
+            (SELECT ClusterID
+            FROM ManagerCluster
+            WHERE ManagerID={ManagerID})
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    cluster_manager_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (
+        True,
+        "Manager's clusters retrieved from db, successfully",
+        cluster_manager_list,
+    )
+
+
+def get_cluster_list(ManagerID, is_admin=False):
+    if is_admin:
+        return get_all_cluster_list()
+    return get_cluster_manager_list(ManagerID)
+
+
+def get_all_cluster_list():
     conn = get_conn()
     cur = conn.cursor(dictionary=True)
     sql_str = """
@@ -303,7 +367,7 @@ def create_student_course(StudentID, CourseID):
     except Error as e:
         cur.close()
         conn.close()
-        return(False, str(e))
+        return (False, str(e))
     cur.close()
     conn.close()
     return (True, "Student participated in the course successfully.")
