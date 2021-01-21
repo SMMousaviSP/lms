@@ -399,13 +399,14 @@ def create_student_course(StudentID, CourseID):
     return (True, "Student participated in the course successfully.")
 
 
-def get_student_course(StudentID):
+def get_student_course_list(StudentID):
     conn = get_conn()
     cur = conn.cursor(dictionary=True)
     sql_str = f"""
-        SELECT c.Name AS 'Course Name'
-        FROM StudentCourse AS sc
-            INNER JOIN Courses AS c ON sc.CourseID = c.ID
+        SELECT c.Name AS 'Course Name', u.FirstName AS 'Teacher First Name', u.LastName AS 'Teacher Last Name', c.ID AS 'Course ID'
+        FROM ((StudentCourse AS sc
+            INNER JOIN Courses AS c ON sc.CourseID = c.ID)
+            INNER JOIN Users AS u ON c.TeacherID = u.ID)
         WHERE sc.StudentID = {StudentID}
     """
     try:

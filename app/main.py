@@ -38,7 +38,19 @@ def load_user(userid):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    success, message, student_course_list = model.get_student_course_list(
+        current_user.id
+    )
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
+    return render_template("index.html", student_course_list=student_course_list)
+
+
+@app.route("/course/<int:CourseID>")
+@login_required
+def course(CourseID):
+    pass
 
 
 @app.route("/login/", methods=["GET", "POST"])
@@ -54,8 +66,9 @@ def login():
             login_user(User(raw_user["ID"]))
             session["User"] = raw_user
             success2, message2, is_manager = model.is_manager(current_user.id)
+            print(f"----------------------{is_manager}")
             if success2:
-                session["User"]["is_manager"] = True
+                session["User"]["is_manager"] = is_manager
             else:
                 flash(message2, "warning")
                 return redirect(url_for("login"))
@@ -157,7 +170,7 @@ def profile(ID):
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
-    success, message, student_course_list = model.get_student_course(ID)
+    success, message, student_course_list = model.get_student_course_list(ID)
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
@@ -167,9 +180,7 @@ def profile(ID):
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
-    success, message, user_cluster_list = model.get_cluster_list(
-        ID
-    )
+    success, message, user_cluster_list = model.get_cluster_list(ID)
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
@@ -179,7 +190,7 @@ def profile(ID):
         course_list=course_list,
         student_course_list=student_course_list,
         cluster_list=cluster_list,
-        user_cluster_list=user_cluster_list
+        user_cluster_list=user_cluster_list,
     )
 
 
@@ -232,7 +243,9 @@ def course_list():
     if not success:
         flash(message, "warning")
         return redirect(url_for("course_list"))
-    success, message, cluster_list = model.get_cluster_list(current_user.id, current_user.is_admin())
+    success, message, cluster_list = model.get_cluster_list(
+        current_user.id, current_user.is_admin()
+    )
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
