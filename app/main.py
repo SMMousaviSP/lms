@@ -60,7 +60,20 @@ def index():
 @app.route("/course/<int:CourseID>")
 @login_required
 def course(CourseID):
-    pass
+    success, message, is_teacher = model.is_teacher(current_user.id, CourseID)
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
+    success, message, course_data = model.get_course(CourseID)
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
+    if not course_data:
+        flash("This course does not exist or you don't have access to it", "warning")
+        return redirect(url_for("index"))
+    return render_template(
+        "course.html", is_teacher=is_teacher, course_data=course_data
+    )
 
 
 @app.route("/login/", methods=["GET", "POST"])
@@ -280,3 +293,15 @@ def participate(StudentID):
     else:
         flash(message, "warning")
     return redirect(url_for("profile", ID=StudentID))
+
+
+@app.route("/students/<int:CourseID>/")
+@login_required
+def student_list(CourseID):
+    pass
+
+
+@app.route("/newcontent/<int:CourseID>/")
+@login_required
+def new_content(CourseID):
+    pass

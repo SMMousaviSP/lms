@@ -439,3 +439,47 @@ def get_teacher_course_list(TeacherID):
     cur.close()
     conn.close()
     return (True, "Courses retrieved from db, successfully.", teacher_course_list)
+
+
+def is_teacher(UserID, CourseID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT COUNT(1) AS is_teacher
+        FROM Courses
+        WHERE ID={CourseID} AND TeacherID={UserID}
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    teacher = cur.fetchone()
+    cur.close()
+    conn.close()
+    return (
+        True,
+        "User checked for teacher successfully",
+        bool(int(teacher["is_teacher"])),
+    )
+
+
+def get_course(CourseID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT ID AS 'Course ID', Name AS 'Course Name', TeacherID AS 'Teacher ID'
+        FROM Courses
+        WHERE ID = {CourseID}
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    course = cur.fetchone()
+    cur.close()
+    conn.close()
+    return (True, "Course retrieved from db, successfully", course)
