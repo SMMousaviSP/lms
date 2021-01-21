@@ -76,7 +76,6 @@ def login():
             login_user(User(raw_user["ID"]))
             session["User"] = raw_user
             success2, message2, is_manager = model.is_manager(current_user.id)
-            print(f"----------------------{is_manager}")
             if success2:
                 session["User"]["is_manager"] = is_manager
             else:

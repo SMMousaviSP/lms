@@ -246,7 +246,6 @@ def get_cluster_manager_list(ManagerID):
             FROM ManagerCluster
             WHERE ManagerID={ManagerID})
     """
-    print(sql_str)
     try:
         cur.execute(sql_str)
     except Error as e:
@@ -271,7 +270,6 @@ def is_manager(UserID):
         FROM ManagerCluster
         WHERE ManagerID={UserID}
     """
-    print(sql_str)
     try:
         cur.execute(sql_str)
     except Error as e:
@@ -335,7 +333,6 @@ def create_course(Name, TeacherID, ClusterID):
         VALUES
         ('{Name}', {ClusterID}, {TeacherID})
     """
-    print(sql_str)
     try:
         cur.execute(sql_str)
         conn.commit()
