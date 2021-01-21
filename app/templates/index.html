@@ -10,14 +10,16 @@
 {% endblock title %}
 
 {% block content %}
-    {% if session.User.is_admin %}
+    {% if session.User.is_admin or session.User.is_manager %}
         <div class="row">
             <div class="col">
                 <a href="{{ url_for('user_list') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Users</a>
             </div>
-            <div class="col">
-                <a href="{{ url_for('cluster_list') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Clusters</a>
-            </div>
+            {% if session.User.is_admin %}                
+                <div class="col">
+                    <a href="{{ url_for('cluster_list') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Clusters</a>
+                </div>
+            {% endif %}
             <div class="col">
                 <a href="{{ url_for('course_list') }}" class="btn btn-lg btn-outline-primary btn-block" role="button">Courses</a>
             </div>

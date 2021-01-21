@@ -241,11 +241,12 @@ def get_cluster_manager_list(ManagerID):
     cur = conn.cursor(dictionary=True)
     sql_str = f"""
         SELECT Name AS 'Cluster Name', ID AS 'Cluster ID'
-        FROM Clusters WHERE 'Cluster ID' IN
+        FROM Clusters WHERE ID IN
             (SELECT ClusterID
             FROM ManagerCluster
             WHERE ManagerID={ManagerID})
     """
+    print(sql_str)
     try:
         cur.execute(sql_str)
     except Error as e:
@@ -259,6 +260,31 @@ def get_cluster_manager_list(ManagerID):
         True,
         "Manager's clusters retrieved from db, successfully",
         cluster_manager_list,
+    )
+
+
+def is_manager(UserID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT COUNT(1) AS is_manager
+        FROM ManagerCluster
+        WHERE ManagerID={UserID}
+    """
+    print(sql_str)
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    manager = cur.fetchone()
+    cur.close()
+    conn.close()
+    return (
+        True,
+        "User checked for manager successfully",
+        bool(int(manager['is_manager']))
     )
 
 

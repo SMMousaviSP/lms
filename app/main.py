@@ -44,7 +44,7 @@ def index():
 @app.route("/login/", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        flash(f"You are currently logged in", "primary")
+        flash("You are currently logged in", "primary")
         return redirect(url_for("index"))
     if request.method == "POST":
         Username = request.form.get("Username", "")
@@ -53,6 +53,12 @@ def login():
         if success:
             login_user(User(raw_user["ID"]))
             session["User"] = raw_user
+            success2, message2, is_manager = model.is_manager(current_user.id)
+            if success2:
+                session["User"]["is_manager"] = True
+            else:
+                flash(message2, "warning")
+                return redirect(url_for("login"))
             return redirect("/")
         else:
             flash(message, "warning")
@@ -161,12 +167,19 @@ def profile(ID):
     if not success:
         flash(message, "warning")
         return redirect(url_for("index"))
+    success, message, user_cluster_list = model.get_cluster_list(
+        ID
+    )
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
     return render_template(
         "profile.html",
         user=raw_user,
         course_list=course_list,
         student_course_list=student_course_list,
-        cluster_list=cluster_list
+        cluster_list=cluster_list,
+        user_cluster_list=user_cluster_list
     )
 
 
