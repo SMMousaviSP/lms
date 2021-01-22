@@ -71,8 +71,15 @@ def course(CourseID):
     if not course_data:
         flash("This course does not exist or you don't have access to it", "warning")
         return redirect(url_for("index"))
+    success, message, content_list = model.get_content_list(CourseID)
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("index"))
     return render_template(
-        "course.html", is_teacher=is_teacher, course_data=course_data
+        "course.html",
+        is_teacher=is_teacher,
+        course_data=course_data,
+        content_list=content_list,
     )
 
 
@@ -301,7 +308,16 @@ def student_list(CourseID):
     pass
 
 
-@app.route("/newcontent/<int:CourseID>/")
+@app.route("/newcontent/<int:CourseID>/", methods=["GET", "POST"])
 @login_required
 def new_content(CourseID):
-    pass
+    if request.method == "POST":
+        Title = request.form.get("Title", "")
+        TextContent = request.form.get("TextContent", "")
+        success, message = model.create_content(CourseID, Title, TextContent)
+        if success:
+            flash("Content created successfully.", "success")
+            return redirect(url_for("course", CourseID=CourseID))
+        flash(message, "warning")
+        return redirect(url_for("course", CourseID=CourseID))
+    return render_template("new_content.html", CourseID=CourseID)

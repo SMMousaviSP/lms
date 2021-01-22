@@ -483,3 +483,56 @@ def get_course(CourseID):
     cur.close()
     conn.close()
     return (True, "Course retrieved from db, successfully", course)
+
+
+def create_content(CourseID, Title, TextContent):
+    """
+    CREATE TABLE Contents (
+        ID INT NOT NULL AUTO_INCREMENT,
+        CourseID INT NOT NULL,
+        Title VARCHAR(255) NOT NULL,
+        TextContent LONGTEXT,
+        CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (ID),
+        FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+        ON DELETE RESTRICT
+    );
+    """
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        INSERT INTO Contents
+        (CourseID, Title, TextContent)
+        VALUES
+        ({CourseID}, '{Title}', '{TextContent}')
+    """
+    try:
+        cur.execute(sql_str)
+        conn.commit()
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e))
+    cur.close()
+    conn.close()
+    return (True, "Content created successfully.")
+
+
+def get_content_list(CourseID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT Title, TextContent, CreatedAt
+        FROM Contents
+        WHERE CourseID = {CourseID}
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    content_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "Contents retrieved from db, successfully", content_list)

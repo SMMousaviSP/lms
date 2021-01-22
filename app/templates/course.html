@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% from 'macro.html' import page_header %}
+
 {% block title %}
     LMS - {{ course_data["Course Name"] }}
 {% endblock title %}
@@ -15,37 +17,23 @@
             </div>
         </div>
     {% endif %}
+    
+    {{ page_header(course_data["Course Name"]) }}
 
-    <!-- {% for course in student_course_list %}
+    {% for content in content_list %}
         <div class="card mt-4">
             <div class="card-body">
-                <a href="{{ url_for('course', CourseID=course["Course ID"]) }}" class="course-link">
-                    <h5 class="card-title">
-                        {{ course["Course Name"] }}
-                        <span class="badge badge-primary">
-                            Student
-                        </span>
-                    </h5>
-                </a>
-            <h6 class="card-subtitle mb-2 text-muted">Teacher: {{ course["Teacher First Name"] }} {{ course["Teacher Last Name"] }}</h6>
+                <h3 class="card-title">
+                    {{ content["Title"] }}
+                </h3>
+                <div class="card-text">
+                    {{ content["TextContent"] }}
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted mt-2">
+                    Date: {{ content["CreatedAt"] }}
+                </h6>
             </div>
         </div>
     {% endfor %}
-
-    {% for course in teacher_course_list %}
-        <div class="card mt-4">
-            <div class="card-body">
-                <a href="{{ url_for('course', CourseID=course["Course ID"]) }}" class="course-link">
-                    <h5 class="card-title">
-                        {{ course["Course Name"] }}
-                        <span class="badge badge-danger">
-                            Teacher
-                        </span>
-                    </h5>
-                </a>
-            <h6 class="card-subtitle mb-2 text-muted">Teacher: {{ course["Teacher First Name"] }} {{ course["Teacher Last Name"] }}</h6>
-            </div>
-        </div>
-    {% endfor %} -->
 
 {% endblock content %}

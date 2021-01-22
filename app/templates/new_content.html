@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% from 'macro.html' import page_header, input, text_area %}
+
+{% block title %}
+    LMS - New Content
+{% endblock title %}
+
+{% block content %}
+
+    {{ page_header("New Content") }}
+
+    <form action="{{ url_for('new_content', CourseID=CourseID) }}" method="POST">
+        {{ input(name="Title", label="Title", required=true) }}
+        {{ text_area(name="TextContent", label="Content", required=false, rows="12") }}
+        <button type="submit" class="btn btn-success btn-block">Submit</button>
+    </form>
+
+
+{% endblock content %}
