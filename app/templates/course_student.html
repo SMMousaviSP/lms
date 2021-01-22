@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% from 'macro.html' import table, page_header %}
+
+{% block title %}
+    LMS - Course Students
+{% endblock title %}
+
+{% block content %}
+    {{ page_header("Student List") }}
+    {{ table(li=student_list, button=false) }}
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+{% endblock script %}

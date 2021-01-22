@@ -305,7 +305,11 @@ def participate(StudentID):
 @app.route("/students/<int:CourseID>/")
 @login_required
 def student_list(CourseID):
-    pass
+    success, message, student_list = model.get_course_student_list(CourseID)
+    if not success:
+        flash(message, "warning")
+        return redirect(url_for("course", CourseID=CourseID))
+    return render_template("course_student.html", student_list=student_list)
 
 
 @app.route("/newcontent/<int:CourseID>/", methods=["GET", "POST"])

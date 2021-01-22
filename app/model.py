@@ -536,3 +536,26 @@ def get_content_list(CourseID):
     cur.close()
     conn.close()
     return (True, "Contents retrieved from db, successfully", content_list)
+
+
+def get_course_student_list(CourseID):
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True)
+    sql_str = f"""
+        SELECT Username, FirstName AS 'First Name', LastName AS 'Last Name',
+        PhoneNumber AS 'Phone Number', Email, Faculty
+        FROM Users
+        WHERE ID IN
+        (SELECT StudentID FROM StudentCourse
+        WHERE CourseID = {CourseID})
+    """
+    try:
+        cur.execute(sql_str)
+    except Error as e:
+        cur.close()
+        conn.close()
+        return (False, str(e), None)
+    student_list = cur.fetchall()
+    cur.close()
+    conn.close()
+    return (True, "Student list retrieved from db, successfully", student_list)
