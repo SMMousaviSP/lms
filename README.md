@@ -1,5 +1,5 @@
 # Learning Management System
-This project was developed with flask as the Data Base and Internet Engineering
+This project was developed with flask as the Database and Internet Engineering
 final project, because of the limited time and the purpose of this project
 which was to work with databases in a website, I did not consider some security
 features which should be considered in the production phase.
